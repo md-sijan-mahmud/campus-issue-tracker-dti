@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTI Campus Helpdesk & Issue Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0f172a 100%);
+            color: white;
+            padding: 35px 20px; /* হেডার ছোট ও স্লিম করার জন্য প্যাডিং কমানো হয়েছে */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
+        .card-img-top {
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .status-badge {
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Banner Section (Slim & Clean) -->
+    <div class="container-fluid hero-section text-center mb-5">
+        <div class="container">
+            <div class="d-flex flex-column align-items-center justify-content-center gap-2">
+                
+                <!-- Top Centered DTI Logo -->
+                {% load static %}
+                <div class="bg-white p-2 rounded-3 shadow-sm d-flex align-items-center justify-content-center mb-1" style="width: 65px; height: 65px;">
+                    <img src="{% static 'tracker/DTI.png' %}" alt="DTI Logo" style="max-height: 50px; max-width: 50px; object-fit: contain;">
+                </div>
+
+                <!-- Main Title -->
+                <h1 class="fw-bold mb-1 text-white fs-4" style="letter-spacing: 0.3px;">Daffodil Technical Institute - Student Support & IT Tracker</h1>
+                
+                <!-- Subtitle -->
+                <p class="text-white-50 small m-0 mb-3">Quickly report and track your campus issues & IT requests</p>
+
+                <!-- Action Button -->
+                <div>
+                    <a href="{% url 'add_complaint' %}" class="btn btn-light text-primary fw-semibold px-4 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2" style="font-size: 13.5px; transition: all 0.2s;">
+                        <i class="fa-solid fa-circle-plus text-primary"></i> নতুন সমস্যা রিপোর্ট করুন
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container mb-5">
+        <div class="row align-items-center mb-4">
+            <div class="col">
+                <h4 class="fw-bold text-dark fs-5"><i class="fa-solid fa-list-check me-2 text-primary"></i>সাম্প্রতিক সমস্যা ও সমাধান স্ট্যাটাস</h4>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for c in complaints %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm bg-white">
+                    {% if c.image %}
+                    <img src="{{ c.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Issue Image">
+                    {% endif %}
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold text-dark">{{ c.title }}</h5>
+                        <p class="card-text text-secondary small flex-grow-1">{{ c.description|truncatechars:90 }}</p>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                            <div>
+                                <span class="badge status-badge 
+                                    {% if c.status == 'Pending' %}bg-warning text-dark
+                                    {% elif c.status == 'In Progress' %}bg-info text-dark
+                                    {% else %}bg-success text-white{% endif %}">
+                                    <i class="fa-solid fa-circle-dot me-1"></i> {{ c.status }}
+                                </span>
+                            </div>
+                            <small class="text-muted"><i class="fa-regular fa-calendar-days me-1"></i>{{ c.created_at|date:"d M, Y" }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="card p-5 shadow-sm bg-white border-0">
+                    <i class="fa-solid fa-clipboard-question fa-3x text-muted mb-3"></i>
+                    <h5 class="text-secondary">এখনো কোনো অভিযোগ বা সমস্যা জমা হয়নি!</h5>
+                    <p class="text-muted small">আপনার ক্যাম্পাসের ল্যাব বা ক্লাসের কোনো সমস্যা থাকলে উপরে বাটনে ক্লিক করে জানান।</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 bg-white text-muted border-top">
+        <small>© 2026 DTI Student Support & IT Tracker | Developed by <strong>Md. Sijan Mahmud</strong></small>
+    </footer>
+
+</body>
+</html>

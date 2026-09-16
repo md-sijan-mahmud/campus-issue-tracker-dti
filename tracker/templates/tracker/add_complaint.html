@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ক্যাম্পাসের সমস্যা রিপোর্ট করুন - DTI Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+        }
+        .form-label {
+            font-weight: 600; /* লেবেলগুলো বোল্ড করার জন্য */
+            color: #334155;
+            margin-bottom: 8px;
+        }
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+        }
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+        }
+        .btn-submit {
+            padding: 12px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-card">
+        <div class="text-center mb-4">
+            <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 65px; height: 65px;">
+                <i class="fa-solid fa-camera fs-4"></i>
+            </div>
+            <h3 class="fw-bold text-dark">ক্যাম্পাসের সমস্যা রিপোর্ট করুন</h3>
+            <p class="text-muted small">ল্যাব, পিসি বা ক্লাসরুমের যেকোনো সমস্যা ছবিসহ বা ছবি ছাড়াও এখানে সাবমিট করুন</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- সমস্যার শিরোনাম -->
+            <div class="mb-3">
+                <label class="form-label">সমস্যার শিরোনাম <span class="text-danger">*</span></label>
+                <input type="text" name="title" class="form-control" placeholder="যেমন: ল্যাব ২ এর ৩ নম্বর পিসি নষ্ট" required>
+            </div>
+
+            <!-- বিস্তারিত বিবরণ -->
+            <div class="mb-3">
+                <label class="form-label">বিস্তারিত বিবরণ <span class="text-danger">*</span></label>
+                <textarea name="description" class="form-control" rows="4" placeholder="বিস্তারিত লিখুন কী সমস্যা হচ্ছে..." required></textarea>
+            </div>
+
+            <!-- সমস্যার ছবি আপলোড করুন (Optional) -->
+            <div class="mb-4">
+                <label class="form-label">সমস্যার ছবি আপলোড করুন <span class="text-muted fw-normal small">(Optional)</span></label>
+                <input type="file" name="image" class="form-control">
+                <div class="form-text text-muted small mt-1">প্রয়োজন না থাকলে ছবি ছাড়াও সাবমিট করতে পারবেন।</div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary btn-submit shadow-sm">
+                    <i class="fa-solid fa-paper-plane me-2"></i>অভিযোগ সাবমিট করুন
+                </button>
+            </div>
+
+            <div class="text-center">
+                <a href="{% url 'home' %}" class="text-decoration-none text-muted small fw-medium">
+                    <i class="fa-solid fa-arrow-left me-1"></i> হোমপেজে ফিরে যান
+                </a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>

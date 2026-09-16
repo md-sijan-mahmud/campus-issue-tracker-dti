@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Campus Tracker</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --sidebar-dark: #0f172a;
+            --primary-accent: #0d6efd;
+            --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: #334155;
+        }
+        .navbar-custom {
+            background: var(--sidebar-dark);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .stat-card {
+            border: none;
+            border-radius: 16px;
+            background: #ffffff;
+            transition: all 0.3s ease;
+            box-shadow: var(--card-shadow);
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+        }
+        .table-container {
+            border: none;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: var(--card-shadow);
+        }
+        .table thead th {
+            background-color: #f1f5f9 !important;
+            color: #475569;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            padding: 16px;
+            border-bottom: none;
+        }
+        .table tbody td {
+            padding: 16px;
+            vertical-align: middle;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .badge-custom-pending { background-color: #fef3c7; color: #d97706; font-weight: 600; padding: 6px 12px; border-radius: 30px; font-size: 12px; }
+        .badge-custom-progress { background-color: #e0f2fe; color: #0284c7; font-weight: 600; padding: 6px 12px; border-radius: 30px; font-size: 12px; }
+        .badge-custom-resolved { background-color: #dcfce7; color: #16a34a; font-weight: 600; padding: 6px 12px; border-radius: 30px; font-size: 12px; }
+        
+        .btn-action {
+            background-color: #0f172a;
+            color: white;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .btn-action:hover {
+            background-color: var(--primary-accent);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar with DTI Logo -->
+    <nav class="navbar navbar-dark navbar-custom px-4 py-3">
+        <div class="container-fluid">
+            <a class="navbar-brand fw-bold fs-6 d-flex align-items-center gap-2" href="#">
+                {% load static %}
+                <img src="{% static 'tracker/DTI.png' %}" alt="DTI Logo" style="height: 32px; background: white; padding: 3px 8px; border-radius: 6px; object-fit: contain;">
+                <span>DTI PORTAL <span class="fw-light text-primary" style="color: #60a5fa !important;">| ADMIN PANEL</span></span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="{% url 'home' %}" class="btn btn-outline-light btn-sm rounded-pill px-3 py-1.5 fs-13">
+                    <i class="fa-solid fa-globe me-1"></i> Live Site
+                </a>
+                <a href="{% url 'admin_logout' %}" class="btn btn-danger btn-sm rounded-pill px-3 py-1.5 fs-13">
+                    <i class="fa-solid fa-power-off me-1"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container my-5">
+
+        <!-- Welcome Banner -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="p-4 bg-white rounded-4 shadow-sm border-0 d-flex justify-content-between align-items-center flex-wrap gap-3" style="background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border-left: 5px solid #0d6efd !important;">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-1">Welcome back, Administrator!</h4>
+                        <p class="text-muted small m-0">Monitor and manage all student-submitted campus complaints in real-time.</p>
+                    </div>
+                    <div class="badge bg-light text-dark px-3 py-2 rounded-pill border fw-normal">
+                        <i class="fa-regular fa-calendar-days text-primary me-1"></i> {% now "d M, Y" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Grid Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px; letter-spacing: 0.05em;">Total Complaints</span>
+                            <h2 class="fw-bold text-dark mt-2 mb-0">{{ total_count }}</h2>
+                        </div>
+                        <div class="rounded-4 p-3 bg-light text-primary fs-4">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px; letter-spacing: 0.05em;">Pending Review</span>
+                            <h2 class="fw-bold text-warning mt-2 mb-0">{{ pending_count }}</h2>
+                        </div>
+                        <div class="rounded-4 p-3 bg-warning bg-opacity-10 text-warning fs-4">
+                            <i class="fa-solid fa-clock-rotate-left"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px; letter-spacing: 0.05em;">In Progress</span>
+                            <h2 class="fw-bold text-info mt-2 mb-0">{{ progress_count }}</h2>
+                        </div>
+                        <div class="rounded-4 p-3 bg-info bg-opacity-10 text-info fs-4">
+                            <i class="fa-solid fa-spinner fa-spin-pulse"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="text-muted text-uppercase fw-semibold" style="font-size: 11px; letter-spacing: 0.05em;">Resolved</span>
+                            <h2 class="fw-bold text-success mt-2 mb-0">{{ resolved_count }}</h2>
+                        </div>
+                        <div class="rounded-4 p-3 bg-success bg-opacity-10 text-success fs-4">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Complaints Table Card -->
+        <div class="card table-container p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold text-dark m-0 d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-clipboard-list text-primary"></i> Complaints Management Stream
+                </h5>
+                <span class="text-muted small">Displaying original user inputs (Bangla / Banglish / English)</span>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th style="width: 8%;">Attachment</th>
+                            <th style="width: 25%;">Complaint Title</th>
+                            <th style="width: 30%;">Description Details</th>
+                            <th style="width: 12%;">Date Submitted</th>
+                            <th style="width: 10%;">Status</th>
+                            <th style="width: 15%;">Action Control</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for c in complaints %}
+                        <tr>
+                            <td>
+                                {% if c.image %}
+                                <a href="{{ c.image.url }}" target="_blank">
+                                    <img src="{{ c.image.url }}" class="rounded-3 shadow-sm border" style="width: 45px; height: 45px; object-fit: cover;" alt="Proof">
+                                </a>
+                                {% else %}
+                                <span class="text-muted small fst-italic">No Image</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <!-- ইউজার যেভাবে ইনপুট দিয়েছে (বাংলা, বাংলিশ বা ইংরেজি), হুবহু সেটাই এখানে শো করবে -->
+                                <span class="fw-semibold text-dark">{{ c.title }}</span>
+                            </td>
+                            <td>
+                                <span class="text-secondary small">{{ c.description }}</span>
+                            </td>
+                            <td>
+                                <span class="text-muted small"><i class="fa-regular fa-clock me-1"></i>{{ c.created_at|date:"d M, Y" }}</span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if c.status == 'Pending' %}badge-custom-pending
+                                    {% elif c.status == 'In Progress' %}badge-custom-progress
+                                    {% else %}badge-custom-resolved{% endif %}">
+                                    {{ c.status }}
+                                </span>
+                            </td>
+                            <td>
+                                <form action="{% url 'update_status' c.id %}" method="POST" class="d-flex gap-2 align-items-center">
+                                    {% csrf_token %}
+                                    <select name="status" class="form-select form-select-sm shadow-none rounded-3" style="font-size: 12px; width: 110px;">
+                                        <option value="Pending" {% if c.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="In Progress" {% if c.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                                        <option value="Resolved" {% if c.status == 'Resolved' %}selected{% endif %}>Resolved</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-action btn-sm px-3 py-1">
+                                        Save
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <div class="py-4">
+                                    <i class="fa-solid fa-folder-open fs-1 text-secondary opacity-25 mb-3 d-block"></i>
+                                    <p class="mb-0">No complaints found in the database yet.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 text-muted small border-top bg-white mt-5">
+        <p class="m-0">Daffodil Technical Institute | Secure Admin Control Portal</p>
+    </footer>
+
+</body>
+</html>
