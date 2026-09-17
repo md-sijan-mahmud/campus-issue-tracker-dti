@@ -43,7 +43,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # WhiteNoise মিডলওয়্যার যোগ করা হলো যাতে রেন্ডারে স্ট্যাটিক ফাইল নিখুঁতভাবে কাজ করে
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -120,8 +119,6 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# রেন্ডারে স্ট্যাটিক ফাইল পারফেক্টলি ক্যাশ করার জন্য হোয়াইটকয়েজ স্টোরেজ যুক্ত করা হলো
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User uploaded images/files)
